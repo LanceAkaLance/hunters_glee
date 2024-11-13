@@ -154,7 +154,7 @@ local function SparkEffect( SparkPos )
 end
 
 function ENT:UpdateGivenScore()
-    self:SetGivenScore( -450 )
+    self:SetGivenScore( -600 )
 
 end
 
@@ -164,13 +164,13 @@ function ENT:CalculateCanPlace()
     if IsHullTraceFull( checkPos, self.HullCheckSize, self ) then return false, self.noPurchaseReason_NoRoom end
     if getNearestNavFloor( checkPos ) == NULL then return false, self.noPurchaseReason_OffNavmesh end
     if not GAMEMODE:IsUnderSky( checkPos ) then return false, "Needs to be placed under the sky." end
-    if GAMEMODE:isTemporaryTrueBool( "terhunt_divine_conduit" ) then return false, "It's too soon for another conduit to form." end
-    if not self:HasEnoughToPurchase() then return false, self.noPurchaseReason_TooPoor end
+    if GAMEMODE:isTemporaryTrueBool( "termhunt_divine_conduit" ) then return false, "It's too soon for another conduit to form." end
+    if not self:HasEnoughToPurchase() then return false, self:TooPoorString() end
     return true
 
 end
 
-ENT.radius = 1200
+ENT.radius = 1050
 
 function ENT:DoCircle()
     local circle = ClientsideModel( "models/hunter/tubes/tube2x2x025.mdl", RENDERGROUP_OPAQUE )
@@ -186,6 +186,7 @@ end
 
 local flatten = Vector( 1,1,0 )
 local tinyUpOffset = Vector( 0,0,20 )
+local interval = 60 * 4
 
 function ENT:Place()
 
@@ -196,6 +197,7 @@ function ENT:Place()
 
     if self.player.GivePlayerScore and betrayalScore then
         self.player:GivePlayerScore( betrayalScore )
+        GAMEMODE:sendPurchaseConfirm( self.player, betrayalScore )
 
     end
 
@@ -225,7 +227,23 @@ function ENT:Place()
 
     end
 
-    huntersGlee_Announce( player.GetAll(), 100, 15, "A DIVINE CONDUIT HAS BEEN OPENED BY " .. string.upper( self.player:Name() ) )
+    local plys = player.GetAll()
+    local warningDist = self.radius * 4
+    local softwarnPlayers = {}
+    local hardwarnPlayers = {}
+    for _, ply in ipairs( plys ) do
+        if ply:Health() > 0 and ply:GetPos():DistToSqr( strikePos ) < warningDist^2 then
+            table.insert( softwarnPlayers, ply )
+
+        elseif ply:Health() <= 0 then
+            table.insert( hardwarnPlayers, ply )
+
+        end
+    end
+    huntersGlee_Announce( softwarnPlayers, 100, 15, "Something isn't right...\nYour hair is standing on end... " )
+    huntersGlee_Announce( hardwarnPlayers, 100, 15, "A Divine Conduit has been opened by " .. self.player:Nick() )
+
+    local max = 300
 
     timer.Create( timerKey, 0.06, 0, function()
         if not IsValid( self ) then timerEnd() return end
@@ -233,7 +251,7 @@ function ENT:Place()
         divineIncrement = divineIncrement + 1
 
         -- sparks
-        if divineIncrement < 75 then
+        if divineIncrement < 70 then
             for _ = 1, 2 do
                 if math.random( 1, 60 ) > divineIncrement then continue end
 
@@ -252,12 +270,12 @@ function ENT:Place()
                 self:EmitSound( "LoudSpark", 90, 100, 1, CHAN_STATIC )
 
             end
-        -- start striking after 120
-        elseif ( divineIncrement > 100 ) and ( divineIncrement < 400 ) then
-            if math.random( 175, 400 ) < divineIncrement then return end
-            if math.random( 215, 400 ) < divineIncrement then return end
+        -- start striking after 80
+        elseif ( divineIncrement > 80 ) and ( divineIncrement < max ) then
+            if math.random( 110, max ) < divineIncrement then return end
+            if math.random( 150, max ) < divineIncrement then return end
 
-            if math.random( 0, 100 ) >= 28 then return end
+            if math.random( 0, 100 ) >= 40 then return end
 
             for _ = 1, 2 do
                 local strikingPos = getRandomSnappedPos()
@@ -266,22 +284,26 @@ function ENT:Place()
 
                 if not GAMEMODE:IsUnderSky( strikingPos ) then return end
 
-                local powa = 5
+                local powa = math.random( 1, 4 )
                 if not self.firstPowafulStrike then
                     self.firstPowafulStrike = true
                     powa = 7
 
                 end
-                if divineIncrement > 200 then
-                    powa = 1.25
+                if divineIncrement > 140 then
+                    powa = 0.75
 
                 end
 
-                termHunt_PowafulLightning( self.attackerInflictor, self, strikingPos, powa )
+                local lightning = ents.Create( "glee_lightning" )
+                lightning:SetOwner( self.attackerInflictor )
+                lightning:SetPos( strikingPos )
+                lightning:SetPowa( powa )
+                lightning:Spawn()
 
             end
 
-        elseif divineIncrement > 400 then
+        elseif divineIncrement > max then
             SafeRemoveEntity( self )
             timerEnd()
 
@@ -300,6 +322,12 @@ function ENT:Place()
     self.player = nil
     self:SetOwner( NULL )
 
-    GAMEMODE:setTemporaryTrueBool( "terhunt_divine_conduit", 240 )
+    GAMEMODE:setTemporaryTrueBool( "termhunt_divine_conduit", interval )
 
 end
+
+hook.Add( "huntersglee_round_into_active", "divine_conduit_initialwait", function()
+    GAMEMODE:setTemporaryTrueBool( "termhunt_divine_conduit_initial", interval )
+    GAMEMODE:setTemporaryTrueBool( "termhunt_divine_conduit", interval )
+
+end )

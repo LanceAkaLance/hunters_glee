@@ -77,6 +77,12 @@ function LockDoorAndRunAFunctionWhenTheDoorIsUsed( door, playerAttaching, functi
     local hookName = "CheckUsedEntity_DoorLocker_" .. door:GetCreationID()
 
     local function UsedCheckIfIsDoor( thingUsingTheDoor, entity )
+        if not IsValid( door ) then
+            hook.Remove( "PlayerUse", hookName )
+            hook.Remove( "TerminatorUse", hookName )
+            return
+
+        end
         -- check if the used entity is the door
         -- the used entity is the door, so check if it is locked
         if entity == door and door:GetSaveTable().m_bLocked then
@@ -86,9 +92,12 @@ function LockDoorAndRunAFunctionWhenTheDoorIsUsed( door, playerAttaching, functi
                 functionToRun( door, thingUsingTheDoor, currentlyProcessingPlayer )
 
             end
-            hook.Remove( hookName )
+            hook.Remove( "PlayerUse", hookName )
+            hook.Remove( "TerminatorUse", hookName )
+
             -- clear the table
             door.doorPlayers = {}
+
         end
     end
 
@@ -133,7 +142,7 @@ local function DoorOnUsedInitial( _, thingUsingTheDoor, currentlyProcessingPlaye
         msg = "A terminator has used one of your locked doors, you gain 80 score!"
 
     end
-    huntersGlee_Announce( { currentlyProcessingPlayer }, 5, 10, msg )
+    huntersGlee_Announce( { currentlyProcessingPlayer }, 5, 8, msg )
 
 end
 

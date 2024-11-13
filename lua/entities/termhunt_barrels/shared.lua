@@ -37,7 +37,6 @@ if CLIENT then
 
         surface.drawShadowedTextBetter( scoreString, "scoreGainedOnPlaceFont", color_white, screenMiddleW, screenMiddleH + 20 )
 
-
     end
 end
 
@@ -176,6 +175,8 @@ function ENT:Place()
     barrel:SetSkin( self:GetSkin() )
     barrel:Spawn()
 
+    terminator_Extras.SmartSleepEntity( barrel, 40 )
+
     self:GetBarrels()
 
     barrel:SetNWBool( "placedbybarrel", true )
@@ -193,6 +194,7 @@ function ENT:Place()
 
     if self.player and self.player.GivePlayerScore and betrayalScore then
         self.player:GivePlayerScore( betrayalScore )
+        GAMEMODE:sendPurchaseConfirm( self.player, betrayalScore )
 
     end
 

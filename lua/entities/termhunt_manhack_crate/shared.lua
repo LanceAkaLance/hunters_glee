@@ -66,6 +66,8 @@ function GM:ManhackCrate( pos )
     local crate = ents.Create( "prop_physics" )
     crate:SetModel( "models/Items/item_item_crate.mdl" )
     crate:SetPos( pos )
+    local random = math.random( -4, 4 ) * 45
+    crate:SetAngles( Angle( 0, random, 0 ) )
     crate:Spawn()
 
     crate.glee_IsManhackCrate = true
@@ -95,6 +97,8 @@ hook.Add( "PropBreak", "glee_spawn_rewarding_manhacks", function( _, broken )
         manhack:SetPos( creationPos )
         manhack:SetAngles( AngleRand() )
         manhack:Spawn()
+
+        manhack:SetLagCompensated( true )
 
         SafeRemoveEntityDelayed( manhack, 240 )
 
@@ -163,6 +167,7 @@ function ENT:Place()
         self.player.glee_ManhacksThatCanDamage = self.player.glee_ManhacksThatCanDamage or {}
         self.player.glee_ManhacksThatCanDamage[ crate:GetCreationID() ] = true
         self.player:GivePlayerScore( betrayalScore )
+        GAMEMODE:sendPurchaseConfirm( self.player, betrayalScore )
 
     end
     SafeRemoveEntity( self )
