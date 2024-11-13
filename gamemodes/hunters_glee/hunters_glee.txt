@@ -1,7 +1,7 @@
 "hunters_glee"
 {
     "base"        "base"
-    "title"       "Hunter's Glee"
+    "title"       "Jerma's Glee"
     "category"    "pve"
     "menusystem"  "1"
     "workshopid"  "2848253104"
@@ -43,8 +43,8 @@
         5
         {
             "name"        "huntersglee_spawneroverridecount"
-            "text"        "Override terminator count."
-            "help"        "Overrides how many terminators will spawn, 0 for dynamic count. Above 4 WILL lag."
+            "text"        "Override jerminator count."
+            "help"        "Overrides how many jerminators will spawn, 0 for dynamic count. Above 4 WILL lag."
             "type"        "Numeric"
             "default"     "0"
         }
