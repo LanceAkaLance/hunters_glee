@@ -1,2 +1,2 @@
 # hunters_glee
-PVPVE gamemode
+PVPVJ gamemode

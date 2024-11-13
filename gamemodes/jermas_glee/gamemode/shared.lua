@@ -33,7 +33,7 @@ include( "modules/unsandboxing/sh_unsandboxing.lua" )
 
 
 function GM:GetHuntersClass()
-    return "terminator_nextbot_jerminator_scared"
+    return "terminator_nextbot_jerminator"
 
 end
 

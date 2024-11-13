@@ -1,10 +1,10 @@
-"hunters_glee"
+"jermas_glee"
 {
     "base"        "base"
     "title"       "Jerma's Glee"
     "category"    "pve"
     "menusystem"  "1"
-    "workshopid"  "2848253104"
+    
 
     "settings"
     {
@@ -36,9 +36,9 @@
         {
             "name"        "termhunter_modeloverride"
             "text"        "Model override"
-            "help"        "The model of the terminator"
+            "help"        "The model of the jerminator"
             "type"        "Text"
-            "default"     "models/terminator/player/arnold/arnold.mdl"
+            "default"     ""
         }
         5
         {
