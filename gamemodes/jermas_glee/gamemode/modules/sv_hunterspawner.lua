@@ -1,11 +1,11 @@
 -- TODO: make this generic and not smelly hard coded
 
 local maxHuntersAtMinutes = {
-    [0] = 4,
+    [0] = 2,
     -- these cannot be math.Rand apparently, have to be .random
-    [math.random( 6, 10 )] = 8,
-    [math.random( 10, 15 )] = 12,
-    [math.random( 15, 23 )] = 14,
+    [math.random( 6, 10 )] = 4,
+    [math.random( 10, 15 )] = 6,
+    [math.random( 15, 23 )] = 7,
 
 }
 

@@ -10,7 +10,7 @@ GM.ROUND_LIMBO      = 3 -- just display winners
 
 GM.ISHUNTERSGLEE = true
 
-GM.Name = "Hunter's Glee"
+GM.Name = "Jerma's Glee"
 GM.Author = "StrawWagen"
 GM.Email = "N/A"
 GM.Website = "N/A"
@@ -33,7 +33,7 @@ include( "modules/unsandboxing/sh_unsandboxing.lua" )
 
 
 function GM:GetHuntersClass()
-    return "terminator_nextbot_jerminator"
+    return "terminator_nextbot_jerminator_realistic"
 
 end
 
